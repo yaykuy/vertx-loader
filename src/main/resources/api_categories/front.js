@@ -33,9 +33,9 @@
  *
  */
 
-eb.registerHandler(busDir+'.prices', prices);
+eb.registerHandler(busDir+'.prices', doPrices);
 
-function prices (message, replier) {
+function doPrices (message, replier) {
 	var token = message.token;
 	if(token==null || token == ''){
 		return reply(replier,'error','missing token');
@@ -64,7 +64,67 @@ function prices (message, replier) {
 	      return reply(replier,'error', e.toString());
 	    }
   	}
-
-
-
 }
+
+/*
+ * /buy
+ *
+ * Permite ingresar ordenes de compra de BTC con CLP. Usuario tiene CLP y quiere
+darselos a yaykuy a cambio de BTC.
+
+Entrada:
+
+     {
+      "token"      : (token de autenticacion)
+      "amount_BTC" : (monto en BTC que se desean comprar, punto como separador decimal)
+	  "buy_BTC_CLP": (valor con el cual se desean comprar los BTC, retornado por /prices)
+	  "deliver_BTC": (direccion bitcoin del usuario donde desea recibir los BTC)
+	  "email"      : (direccion de email de contacto para notificaciones. Opcional)
+	  }
+
+Salida:
+
+    { 
+       "status"     : (estado de la orden de compra. "ok" o "error")
+       "message"    : (mensaje de error)
+       "amount_CLP" : (monto en CLP a pagar a yaykuy)
+       "yky_code"   : (codigo para efectuar el pago)
+    }
+ */
+
+eb.registerHandler(busDir+'.buy', doBuy);
+
+function doBuy (message, replier) {
+	var token = message.token;
+	if(token==null || token == ''){
+		return reply(replier,'error','missing token');
+	}
+
+	var request   = client.request('POST', endpoint+'/buy', gotResponse);
+    request.chunked(true);
+
+	request.write(JSON.stringify(message));
+    request.end();
+
+	function gotResponse (response) {
+	    if (response.statusCode() != 200) {
+	      reply(replier,'error','Status Code = '+response.statusCode());
+	    } else {
+	      response.bodyHandler(readBody);
+	    }
+	}
+
+	function readBody (body) {
+	    try {
+	      var b = JSON.parse(body.toString());
+	      if (b.error) {
+	        return reply(replier,'error', JSON.stringify(b.error));
+	      } else {
+	        return reply(replier,'ok', b);
+	      }
+	    } catch (e) {
+	      return reply(replier,'error', e.toString());
+	    }
+  	}
+}
+

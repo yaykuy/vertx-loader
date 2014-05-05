@@ -24,37 +24,43 @@ var console = require("vertx/console");
 
 var eb = vertx.eventBus;
 
-function testPricesNoToken()   {
-  eb.send('test_yaykuy.prices', {}, function(reply) {
-      //console.log("testPricesNoToken reply:"+JSON.stringify(reply,null,4));
+function testBuyNoToken()   {
+  eb.send('test_yaykuy.buy', {}, function(reply) {
+      //console.log("_testBuyNoToken reply:"+JSON.stringify(reply,null,4));
       vassert.assertEquals('error', reply.status);
       vassert.assertEquals('missing token', reply.data);
       vassert.testComplete();
     });
 }
 
-function testPricesInvalidToken()   {
-  eb.send('test_yaykuy.prices', {'token': 'aaaaaaa'}, function(reply) {
-      console.log("testPricesInvalidToken reply:"+JSON.stringify(reply,null,4));
+function testBuyInvalidToken()   {
+  var data=buyData;
+  data.token='aaaaa'
+  eb.send('test_yaykuy.buy',  data , function(reply) {
+      //console.log("_testBuyInvalidToken reply:"+JSON.stringify(reply,null,4));
       vassert.assertEquals('ok', reply.status);
       vassert.assertEquals('error', reply.data.status);
       vassert.assertEquals('Token inválido', reply.data.message);
       vassert.testComplete();
-      vassert.testComplete();
     });
 }
 
-function testPrices()   {
+function testBuy()   {
   eb.send('test_yaykuy.prices', {'token': testToken}, function(reply) {
-      //console.log("testPricesInvalidToken reply:"+JSON.stringify(reply,null,4));
-      vassert.assertEquals('ok', reply.status);
-      vassert.assertEquals('ok', reply.data.status);
-      vassert.assertTrue(reply.data.buy_BTC_CLP > 0);
-      vassert.assertTrue(reply.data.sell_BTC_CLP > 0);
-      vassert.assertTrue(reply.data.ask_USD_BTC > 0);
-      vassert.assertTrue(reply.data.bid_USD_BTC > 0);
-      vassert.testComplete();
-    });
+    var data=buyData;
+    data.buy_BTC_CLP=reply.data.buy_BTC_CLP;
+    console.log("testBuy send:"+JSON.stringify(data,null,4));
+
+    eb.send('test_yaykuy.buy',data, function(reply) {
+        console.log("testBuy reply:"+JSON.stringify(reply,null,4));
+        vassert.assertEquals('ok', reply.status);
+        vassert.assertEquals('ok', reply.data.status);
+        vassert.assertEquals('no problem', reply.data.message);
+        vassert.assertTrue(reply.data.amount_CLP > 0);
+        vassert.assertNotNull(reply.data.yky_code);
+        vassert.testComplete();
+      });
+  });
 }
 
 var script = this;
