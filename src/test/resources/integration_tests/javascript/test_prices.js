@@ -22,10 +22,20 @@ var console = require("vertx/console");
 
 var eb = vertx.eventBus;
 
-function testPricesNoToken() {
+function testPricesNoToken()   {
   eb.send('test_yaykuy.prices', {}, function(reply) {
       console.log("testPricesNoToken reply:"+JSON.stringify(reply,null,4));
+      vassert.assertEquals('error', reply.status);
+      vassert.assertEquals('missing token', reply.data);
+      vassert.testComplete();
+    });
+}
+
+function testPricesInvalidToken()   {
+  eb.send('test_yaykuy.prices', {'token': 'aaaaaaa'}, function(reply) {
+      console.log("testPricesInvalidToken reply:"+JSON.stringify(reply,null,4));
       vassert.assertEquals('ok', reply.status);
+      vassert.assertEquals('error', reply.data.status);
       vassert.testComplete();
     });
 }

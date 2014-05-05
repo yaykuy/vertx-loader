@@ -36,7 +36,12 @@
 eb.registerHandler(busDir+'.prices', prices);
 
 function prices (message, replier) {
-	var request   = client.request('GET', endpoint+'/prices', gotResponse);
+	var token = message.token;
+	if(token==null || token == ''){
+		return reply(replier,'error','missing token');
+	}
+
+	var request   = client.request('GET', endpoint+'/prices?token='+token, gotResponse);
     request.end();
 
 	function gotResponse (response) {
@@ -60,6 +65,6 @@ function prices (message, replier) {
 	    }
   	}
 
-  	
+
 
 }
