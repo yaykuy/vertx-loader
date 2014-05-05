@@ -36,3 +36,4 @@ Implemented:
  * /prices
  * /buy
  
+[![Build Status](https://travis-ci.org/yaykuy/vertx-yaykuy.svg?branch=master)](https://travis-ci.org/yaykuy/vertx-yaykuy)
