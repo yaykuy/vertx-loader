@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+var testToken = "fd4493a2-f82a-4196-b347-d9667011b56b"
+
 var container = require("vertx/container")
 var vertx = require("vertx");
 var vertxTests = require("vertx_tests");
@@ -22,20 +24,33 @@ var console = require("vertx/console");
 
 var eb = vertx.eventBus;
 
-function testPricesNoToken()   {
+function _testPricesNoToken()   {
   eb.send('test_yaykuy.prices', {}, function(reply) {
-      console.log("testPricesNoToken reply:"+JSON.stringify(reply,null,4));
+      //console.log("testPricesNoToken reply:"+JSON.stringify(reply,null,4));
       vassert.assertEquals('error', reply.status);
       vassert.assertEquals('missing token', reply.data);
       vassert.testComplete();
     });
 }
 
-function testPricesInvalidToken()   {
+function _testPricesInvalidToken()   {
   eb.send('test_yaykuy.prices', {'token': 'aaaaaaa'}, function(reply) {
-      console.log("testPricesInvalidToken reply:"+JSON.stringify(reply,null,4));
+      //console.log("testPricesInvalidToken reply:"+JSON.stringify(reply,null,4));
+      vassert.assertEquals('error', reply.status);
+      vassert.assertEquals('Status Code = 500', reply.data);
+      vassert.testComplete();
+    });
+}
+
+function testPrices()   {
+  eb.send('test_yaykuy.prices', {'token': testToken}, function(reply) {
+      //console.log("testPricesInvalidToken reply:"+JSON.stringify(reply,null,4));
       vassert.assertEquals('ok', reply.status);
-      vassert.assertEquals('error', reply.data.status);
+      vassert.assertEquals('ok', reply.data.status);
+      vassert.assertTrue(reply.data.buy_BTC_CLP > 0);
+      vassert.assertTrue(reply.data.sell_BTC_CLP > 0);
+      vassert.assertTrue(reply.data.ask_USD_BTC > 0);
+      vassert.assertTrue(reply.data.bid_USD_BTC > 0);
       vassert.testComplete();
     });
 }

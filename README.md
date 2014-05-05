@@ -33,4 +33,5 @@ Look at https://api.yaykuy.cl/
 
 Implemented:
  
+ * /prices
  * 
