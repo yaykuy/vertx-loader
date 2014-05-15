@@ -38,7 +38,7 @@ function testPricesInvalidToken()   {
       console.log("testPricesInvalidToken reply:"+JSON.stringify(reply,null,4));
       vassert.assertEquals('ok', reply.status);
       vassert.assertEquals('error', reply.data.status);
-      vassert.assertEquals('Token inválido', reply.data.message);
+      vassert.assertEquals('invalid token', reply.data.message);
       vassert.testComplete();
       vassert.testComplete();
     });

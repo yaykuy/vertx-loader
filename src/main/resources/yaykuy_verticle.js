@@ -23,7 +23,7 @@ var config = container.config;
 
 var eb = vertx.eventBus;
 var client = vertx.createHttpClient()
-  .host('yaykuy-backend.herokuapp.com')  //Should be api.yaykuy.cl but problems with SSL
+  .host('yaykuy-backend-dev.herokuapp.com')  //Should be api.yaykuy.cl but problems with SSL
   .port(443)
   .ssl(true)
   .trustAll(true);
