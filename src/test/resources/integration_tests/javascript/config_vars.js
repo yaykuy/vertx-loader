@@ -6,3 +6,9 @@ var buyData =  {
 	  "deliver_BTC": '1test',
 	  "email"      : 'test@test.cl'
 }
+var sellData =  {
+      "token"      : testToken,
+      "amount_BTC" : '0.1', 
+	  "sell_BTC_CLP": 1,
+	  "email"      : 'test@test.cl'
+}

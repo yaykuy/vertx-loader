@@ -1,4 +1,5 @@
 // Yaykuy Module JSON config file
 {
-  "address": "yaykuy"
+  "address": "yaykuy",
+  "server": "yaykuy-backend.herokuapp.com"
 }

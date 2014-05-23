@@ -24,20 +24,20 @@ var console = require("vertx/console");
 
 var eb = vertx.eventBus;
 
-function testBuyNoToken()   {
-  eb.send('test_yaykuy.buy', {}, function(reply) {
-      //console.log("_testBuyNoToken reply:"+JSON.stringify(reply,null,4));
+function testSellNoToken()   {
+  eb.send('test_yaykuy.sell', {}, function(reply) {
+      //console.log("testSellNoToken reply:"+JSON.stringify(reply,null,4));
       vassert.assertEquals('error', reply.status);
       vassert.assertEquals('missing token', reply.data);
       vassert.testComplete();
     });
 }
 
-function testBuyInvalidToken()   {
-  var data=buyData;
+function testSellInvalidToken()   {
+  var data=sellData;
   data.token='aaaaa'
-  eb.send('test_yaykuy.buy',  data , function(reply) {
-      //console.log("_testBuyInvalidToken reply:"+JSON.stringify(reply,null,4));
+  eb.send('test_yaykuy.sell',  data , function(reply) {
+      //console.log("testSellInvalidToken reply:"+JSON.stringify(reply,null,4));
       vassert.assertEquals('ok', reply.status);
       vassert.assertEquals('error', reply.data.status);
       vassert.assertEquals('Token inválido', reply.data.message);
@@ -45,17 +45,18 @@ function testBuyInvalidToken()   {
     });
 }
 
-function testBuy()   {
+function testSell()   {
   eb.send('test_yaykuy.prices', {'token': testToken}, function(reply) {
-    var data=buyData;
-    data.buy_BTC_CLP=reply.data.buy_BTC_CLP;
-    console.log("testBuy send:"+JSON.stringify(data,null,4));
+    var data=sellData;
+    data.sell_BTC_CLP=reply.data.sell_BTC_CLP;
+    console.log("testSell send:"+JSON.stringify(data,null,4));
 
-    eb.send('test_yaykuy.buy',data, function(reply) {
-        console.log("testBuy reply:"+JSON.stringify(reply,null,4));
+    eb.send('test_yaykuy.sell',data, function(reply) {
+        console.log("testSell reply:"+JSON.stringify(reply,null,4));
         vassert.assertEquals('ok', reply.status);
         vassert.assertEquals('ok', reply.data.status);
         vassert.assertEquals('no problem', reply.data.message);
+        vassert.assertNotNull(reply.data.deposit_BTC);
         vassert.assertTrue(reply.data.amount_CLP > 0);
         vassert.assertNotNull(reply.data.yky_code);
         vassert.testComplete();
@@ -69,6 +70,7 @@ var config = {
     "address": "test_yaykuy", 
     "server": "yaykuy-backend-dev.herokuapp.com" 
 }
+
 container.deployModule(java.lang.System.getProperty("vertx.modulename"), config, 1, function(err, depID) {
     vertxTests.startTests(script);
 });

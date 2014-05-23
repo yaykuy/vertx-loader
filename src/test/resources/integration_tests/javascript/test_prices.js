@@ -59,7 +59,11 @@ function testPrices()   {
 
 var script = this;
 
-var config = { "address": "test_yaykuy" }
+var config = { 
+    "address": "test_yaykuy", 
+    "server": "yaykuy-backend-dev.herokuapp.com" 
+}
+
 container.deployModule(java.lang.System.getProperty("vertx.modulename"), config, 1, function(err, depID) {
     vertxTests.startTests(script);
 });

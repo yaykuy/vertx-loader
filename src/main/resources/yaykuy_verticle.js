@@ -18,12 +18,16 @@ var console = require('vertx/console')
 var container = require('vertx/container');
 
 var config = container.config;
-
 //console.log("Yaykuy config:"+JSON.stringify(config));
+var server='api.yaykuy.cl';
+if(config.server!=null){
+  server=config.server;
+}
+console.log("Connecting to:"+server);
 
 var eb = vertx.eventBus;
 var client = vertx.createHttpClient()
-  .host('yaykuy-backend-dev.herokuapp.com')  //Should be api.yaykuy.cl but problems with SSL
+  .host(server)  //Should be api.yaykuy.cl but problems with SSL
   .port(443)
   .ssl(true)
   .trustAll(true);

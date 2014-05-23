@@ -128,3 +128,66 @@ function doBuy (message, replier) {
   	}
 }
 
+/*
+ * /sell
+ *
+ * Permite ingresar ordenes de venta de BTC por CLP. Usuario tiene BTC y quiere darselos 
+a yaykuy a cambio de CLP
+
+Entrada:
+
+     {
+      "token"       : (token de autenticacion)
+      "amount_BTC"  : (monto en BTC que se desean vender, punto como separador decimal)
+	  "sell_BTC_CLP": (valor con el cual se desean vender los BTC, retornado por /prices)
+	  "email"       : (direccion de email de contacto para notificaciones. Opcional)
+	  "pin"         : (numero de identificacion personal. 4 digitos. Opcional)
+	 }
+
+Salida:
+
+    { 
+       "status"         : (estado de la orden de venta. "ok" o "error")
+       "message"        : (mensaje de error)
+       "deposit_BTC"    : (direccion bitcoin de yaykuy a donde se deben enviar los BTC)
+       "amount_CLP"     : (monto en CLP que se pagaran al usuario)
+	   "yky_code"       : (codigo yky para recibir el pago)
+    }
+ */
+
+eb.registerHandler(busDir+'.sell', doSell);
+
+function doSell (message, replier) {
+	var token = message.token;
+	if(token==null || token == ''){
+		return reply(replier,'error','missing token');
+	}
+
+	var request   = client.request('POST', endpoint+'/sell', gotResponse);
+    request.chunked(true);
+
+	request.write(JSON.stringify(message));
+    request.end();
+
+	function gotResponse (response) {
+	    if (response.statusCode() != 200) {
+	      reply(replier,'error','Status Code = '+response.statusCode());
+	    } else {
+	      response.bodyHandler(readBody);
+	    }
+	}
+
+	function readBody (body) {
+	    try {
+	      var b = JSON.parse(body.toString());
+	      if (b.error) {
+	        return reply(replier,'error', JSON.stringify(b.error));
+	      } else {
+	        return reply(replier,'ok', b);
+	      }
+	    } catch (e) {
+	      return reply(replier,'error', e.toString());
+	    }
+  	}
+}
+
