@@ -152,24 +152,30 @@ public class ServerLoaderVerticle extends Verticle {
 			return;
 		}
 		
-		if(serverVerticleConfig != null){
-			String verticleFile = "verticles/"+serverVerticleConfig+"_verticle.js";
-		    container.deployVerticle(verticleFile,deployedServerVerticle(serverVerticleConfig,startedResult));
+		if(serverVerticleConfig != null && !serverVerticleConfig.trim().equals("")){
+			String verticleFile = null;
+			if(container.config().getObject("server")!= null){
+				verticleFile=container.config().getObject("server").getString("file");
+			}
+		    if(verticleFile==null){
+		    	verticleFile="verticles/"+serverVerticleConfig+"_verticle.js";
+		    }
+		    container.deployVerticle(verticleFile,deployedServerVerticle(verticleFile,startedResult));
 		}else{
 			done(startedResult);
 		}
 	}
 	
 	
-	private Handler<AsyncResult<String>> deployedServerVerticle(final String name,final Future<Void> startedResult){
+	private Handler<AsyncResult<String>> deployedServerVerticle(final String filename,final Future<Void> startedResult){
 		return new Handler<AsyncResult<String>>(){
 			@Override
 			public void handle(AsyncResult<String> asyncResult) {
 				if (asyncResult.succeeded()) {
-					container.logger().info("Server Verticle "+name+ " deployed ");
+					container.logger().info("Server Verticle file:"+filename+ " deployed ");
 					done(startedResult);
 		        } else {
-		        	container.logger().error("Deployment of Server verticle "+name+ " failed.",
+		        	container.logger().error("Deployment of Server verticle "+filename+ " failed.",
 		        			asyncResult.cause());
 		        	startedResult.setFailure(asyncResult.cause());
 		        }
