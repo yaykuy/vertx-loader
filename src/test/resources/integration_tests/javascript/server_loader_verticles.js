@@ -51,7 +51,7 @@ function testVerticles(){
 	{
 			"appConfig": {
 				"verticles" : {
-					"some": {}
+					"some0": {}
 				}
 			}
 	};
