@@ -1,5 +1,18 @@
-// Example JSON config file
-
+// Vert.x Server Loader JSON config file
 {
-  "foo": "bar"
+	//Module and Verticle loading config
+	"appConfig" :{
+		//Module loading		
+		"modules" :{
+			
+		},
+		//Own verticles loading
+		"verticles"	: {
+
+		},
+		//Last verticle to start. Server verticle
+		"serverVerticle"	: ""
+	}
+
+	//Modules and verticles config
 }

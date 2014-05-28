@@ -1,0 +1,5 @@
+src/main/resources
+bin
+out/production/vertx-loader
+out/test/vertx-loader
+build/deps
