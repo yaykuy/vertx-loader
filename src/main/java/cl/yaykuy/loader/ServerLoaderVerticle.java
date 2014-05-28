@@ -102,14 +102,19 @@ public class ServerLoaderVerticle extends Verticle {
 		if(verticlesConfig != null && verticlesConfig.size()>0){
 			totalVerticles=verticlesConfig.size();
 			for (Map.Entry<String,Object > e : verticlesConfig.toMap().entrySet()) {
-			    String name = e.getKey();
-			    String verticleFile = verticlesConfig.getObject(name).getString("file");
-			    if(verticleFile==null){
-			    	verticleFile="verticles/"+name+"_verticle.js";
-			    }else{
-			    	verticleFile="verticles/"+verticleFile;
-			    }
-			    container.deployVerticle(verticleFile,deployedVerticle(name,startedResult));
+				try{
+				    String name = e.getKey();
+				    String verticleFile = verticlesConfig.getObject(name).getString("file");
+				    if(verticleFile==null){
+				    	verticleFile="verticles/"+name+"_verticle.js";
+				    }else{
+				    	verticleFile="verticles/"+verticleFile;
+				    }
+				    container.deployVerticle(verticleFile,deployedVerticle(name,startedResult));
+				}catch (Exception e2){
+					startedResult.setFailure(new Exception("verticle definition malformed"));
+					return;
+				}
 			}
 		}else{
 			deployServerVerticle(startedResult);

@@ -83,12 +83,12 @@ function testVerticles1y1(){
 			"appConfig": {
 				"verticles" : {
 					"some0": {},
-					"some1_malo": malo
+					"some1_malo": "malo"
 				}
 			}
 	};
 	container.deployModule(java.lang.System.getProperty("vertx.modulename"), config, function(err, depID) {
-		vassert.assertEquals(err.getMessage(),"Invalid module identifier: malo. Should be of form owner~name~version");
+		vassert.assertEquals(err.getMessage(),"verticle definition malformed");
 		vassert.testComplete();	
 	})
 }
