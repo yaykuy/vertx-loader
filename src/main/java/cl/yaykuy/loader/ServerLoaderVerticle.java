@@ -161,8 +161,8 @@ public class ServerLoaderVerticle extends Verticle {
 			@Override
 			public void handle(AsyncResult<String> asyncResult) {
 				if (asyncResult.succeeded()) {
-					container.logger().info("Server Verticle "+name+ " deployed "+loadedVerticles+"/"+totalVerticles);
-					deployServerVerticle(startedResult);
+					container.logger().info("Server Verticle "+name+ " deployed ");
+					done(startedResult);
 		        } else {
 		        	container.logger().error("Deployment of Server verticle "+name+ " failed.",
 		        			asyncResult.cause());
