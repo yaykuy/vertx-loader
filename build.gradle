@@ -72,11 +72,11 @@ Please edit the details below.
 def configurePom(def pom) {
   pom.project {
     name rootProject.name
-    description 'Yaykuy API'
+    description 'Vert.x Server Loader'
     inceptionYear '2014'
     packaging 'jar'
 
-    url 'https://github.com/yaykuy/vertx-yaykuy/'
+    url 'https://github.com/yaykuy/vertx-loader/'
 
     developers {
       developer {
@@ -87,7 +87,7 @@ def configurePom(def pom) {
     }
 
     scm {
-      url 'https://github.com/yaykuy/vertx-yaykuy.git'
+      url 'https://github.com/yaykuy/vertx-loader.git'
     }
 
     licenses {

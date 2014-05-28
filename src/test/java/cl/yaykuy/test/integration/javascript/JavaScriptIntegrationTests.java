@@ -1,4 +1,4 @@
-package cl.yaykuy.yaykuy.test.integration.javascript;
+package cl.yaykuy.test.integration.javascript;
 /*
  * Copyright 2013 Red Hat, Inc.
  *

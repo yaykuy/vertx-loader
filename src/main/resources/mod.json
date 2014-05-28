@@ -1,18 +1,18 @@
 {
 
-  "main": "yaykuy_verticle.js",
+  "main": "cl.yaykuy.loader.ServerLoader",
 
 
   // If your module is going to be registered in the Vert.x module registry you will also need the following
   // mandatory fields
-  "description":"Vert.x Module for Yaykuy API",
+  "description":"Vert.x Server Loader",
   "licenses": ["The Apache Software License Version 2.0"],
   "author": "Andres Junge",
 
   // Optional fields
   "developers": ["Andres Junge"],
-  "keywords": ["yaykuy", "bitcoin", "chile"],
-  "homepage": "https://github.com/yaykuy/vertx-yaykuy",
+  "keywords": ["yaykuy", "vertx", "loader", "server","chile"],
+  "homepage": "https://github.com/yaykuy/vertx-loader",
 
   "auto-redeploy": true
 
