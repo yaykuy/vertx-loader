@@ -62,7 +62,8 @@ public class ServerLoaderVerticle extends Verticle {
 			for (Map.Entry<String,Object > e : modulesConfig.toMap().entrySet()) {
 			    String name = e.getKey();
 			    String moduleName = modulesConfig.getObject(name).getString("module");
-			    container.deployModule(moduleName,deployedModule(name,startedResult));
+			    JsonObject moduleConfig = container.config().getObject(moduleName);
+			    container.deployModule(moduleName,moduleConfig,deployedModule(name,startedResult));
 			}
 		}else{
 			deployAllVerticles(startedResult);
@@ -103,14 +104,14 @@ public class ServerLoaderVerticle extends Verticle {
 			totalVerticles=verticlesConfig.size();
 			for (Map.Entry<String,Object > e : verticlesConfig.toMap().entrySet()) {
 				try{
-				    String name = e.getKey();
-				    String verticleFile = verticlesConfig.getObject(name).getString("file");
+				    String verticleName = e.getKey();
+				    String verticleFile = verticlesConfig.getObject(verticleName).getString("file");
 				    if(verticleFile==null){
-				    	verticleFile="verticles/"+name+"_verticle.js";
-				    }else{
-				    	verticleFile="verticles/"+verticleFile;
+				    	verticleFile="verticles/"+verticleName+"_verticle.js";
 				    }
-				    container.deployVerticle(verticleFile,deployedVerticle(name,startedResult));
+				    JsonObject verticleConfig = container.config().getObject(verticleName);
+				    
+				    container.deployVerticle(verticleFile,verticleConfig,deployedVerticle(verticleName,startedResult));
 				}catch (Exception e2){
 					startedResult.setFailure(new Exception("verticle definition malformed"));
 					return;
@@ -144,23 +145,24 @@ public class ServerLoaderVerticle extends Verticle {
 	
 	private void deployServerVerticle(final Future<Void> startedResult){
 		JsonObject appConfig = container.config().getObject("appConfig");
-		String serverVerticleConfig=null;
+		String serverVerticleName=null;
 		try{
-			serverVerticleConfig = appConfig.getString("serverVerticle");
+			serverVerticleName = appConfig.getString("serverVerticle");
 		}catch(Exception e){
 			startedResult.setFailure(new Exception("serverVerticle malformed"));
 			return;
 		}
 		
-		if(serverVerticleConfig != null && !serverVerticleConfig.trim().equals("")){
+		if(serverVerticleName != null && !serverVerticleName.trim().equals("")){
 			String verticleFile = null;
-			if(container.config().getObject("server")!= null){
+			JsonObject verticleConfig = container.config().getObject("server");
+			if(verticleConfig!= null){
 				verticleFile=container.config().getObject("server").getString("file");
 			}
 		    if(verticleFile==null){
-		    	verticleFile="verticles/"+serverVerticleConfig+"_verticle.js";
+		    	verticleFile="verticles/"+serverVerticleName+"_verticle.js";
 		    }
-		    container.deployVerticle(verticleFile,deployedServerVerticle(verticleFile,startedResult));
+		    container.deployVerticle(verticleFile,verticleConfig,deployedServerVerticle(verticleFile,startedResult));
 		}else{
 			done(startedResult);
 		}
